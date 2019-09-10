@@ -114,11 +114,13 @@ fn main() {
             let old_version: String = cargo_content.drain(start_version..end_version).collect();
             println!("old version: \"{}\"", old_version.as_str());
             let date = Local::now();
-            let new_version = format!("{}.{}.{}", date.year()-2000,date.month(),date.day());
-            println!("new_version {}", new_version);
-            cargo_content.insert_str(start_version, new_version.as_str());
-            println!("write file: {}", Yellow.paint(cargo_filename));
-            let _x = fs::write(cargo_filename, cargo_content);
+            let new_version = format!("{}.{}.{}", date.year() - 2000, date.month(), date.day());
+            if new_version != old_version {
+                println!("new_version {}", new_version);
+                cargo_content.insert_str(start_version, new_version.as_str());
+                println!("write file: {}", Yellow.paint(cargo_filename));
+                let _x = fs::write(cargo_filename, cargo_content);
+            }
         } else {
             panic!("no end quote for version");
         }
