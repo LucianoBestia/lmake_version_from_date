@@ -104,15 +104,15 @@ fn main() {
     //find version in cargo.toml
     let cargo_filename = "cargo.toml";
     let mut cargo_content = unwrap!(fs::read_to_string(cargo_filename));
-    let delim = "version = \"";
+    let delim = r#"version = ""#;
     let option_location = cargo_content.find(delim);
     if let Some(location) = option_location {
         let start_version = location + 11;
-        let option_end_quote = find_from(cargo_content.as_str(), start_version, "\"");
+        let option_end_quote = find_from(cargo_content.as_str(), start_version, r#"""#);
         if let Some(end_version) = option_end_quote {
             //delete all the lines in between the markers
             let old_version: String = cargo_content.drain(start_version..end_version).collect();
-            println!("old version: \"{}\"", old_version.as_str());
+            println!(r#"old version: "{}""#, old_version.as_str());
             let date = Local::now();
             let new_version = format!("{}.{}.{}", date.year() - 2000, date.month(), date.day());
             if new_version != old_version {
