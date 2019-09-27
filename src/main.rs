@@ -121,7 +121,7 @@ fn main() {
     let mut is_files_equal = true;
 
     //find lmakeversionfromdate.json
-    let json_filepath = "target/lmakeversionfromdate.json";
+    let json_filepath = "lmakeversionfromdate.json";
     let js_struct: LmakeVersionFromDate;
     let f = fs::read_to_string(json_filepath);
     match f {
