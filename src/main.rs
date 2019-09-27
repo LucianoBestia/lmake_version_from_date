@@ -58,28 +58,44 @@
     clippy::multiple_inherent_impl,
 
     clippy::missing_docs_in_private_items,
+    clippy::unused_imports,
 )]
 //endregion
+#![allow(unused_imports)]
 
-//region: extern and use statements
-#[macro_use]
-extern crate unwrap;
-extern crate chrono;
-extern crate clap;
-extern crate glob;
-
-#[allow(unused_imports)]
-use crate::chrono::Timelike;
+//region: use statements
 use ansi_term::Colour::{Green, Red, Yellow};
+use chrono::offset::Utc;
+use chrono::prelude::*;
+use chrono::DateTime;
+use chrono::Timelike;
 use chrono::{Datelike, Local};
+use unwrap::unwrap;
 //use ansi_term::Style;
 use clap::App; //Arg
-
-//use glob::glob;
+               //use glob::glob;
+use filetime::FileTime;
+use serde_derive::{Deserialize, Serialize};
 use std::env;
 use std::fs;
 //use std::path::Path; //PathBuf
 //endregion
+
+///file metadata
+#[derive(Serialize, Deserialize)]
+struct FileMetaData {
+    //filename with path from cargo.toml folder
+    filename: String,
+    //filedate from file
+    filedate: String,
+}
+
+///the struct that is in the file lmakeversionfromdate.json
+#[derive(Serialize, Deserialize)]
+struct LmakeVersionFromDate {
+    ///vector of file metadata
+    vec_file_metadata: Vec<FileMetaData>,
+}
 
 #[allow(clippy::print_stdout, clippy::integer_arithmetic)]
 /// The program starts here. No arguments.
@@ -102,34 +118,127 @@ fn main() {
         Yellow.paint(unwrap!(current_dir.to_str()))
     );
 
-    //find version in cargo.toml
-    let cargo_filename = "cargo.toml";
-    let mut cargo_content = unwrap!(fs::read_to_string(cargo_filename));
-    let delim = r#"version = ""#;
-    let option_location = cargo_content.find(delim);
-    if let Some(location) = option_location {
-        let start_version = location + 11;
-        let option_end_quote = find_from(cargo_content.as_str(), start_version, r#"""#);
-        if let Some(end_version) = option_end_quote {
-            //delete all the lines in between the markers
-            let old_version: String = cargo_content.drain(start_version..end_version).collect();
-            println!(r#"old version: "{}""#, old_version.as_str());
-            let date = Local::now();
-            let new_version = format!("{}.{}.{}-{}.{}", 
-            date.year() - 2000, date.month(), date.day(),
-            date.hour(), date.minute());
-            if new_version != old_version {
-                println!("new_version {}", new_version);
-                cargo_content.insert_str(start_version, new_version.as_str());
-                println!("write file: {}", Yellow.paint(cargo_filename));
-                let _x = fs::write(cargo_filename, cargo_content);
+    let mut is_files_equal = true;
+
+    //find lmakeversionfromdate.json
+    let json_filepath = "target/lmakeversionfromdate.json";
+    let js_struct: LmakeVersionFromDate;
+    let f = fs::read_to_string(json_filepath);
+    match f {
+        Ok(x) => {
+            println!("reading from {}", json_filepath);
+            //read struct from file
+            js_struct = unwrap!(serde_json::from_str(x.as_str()));
+        }
+        Err(_error) => {
+            println!("file does not exist: {}", Red.paint(json_filepath));
+            //create empty struct
+            js_struct = LmakeVersionFromDate {
+                vec_file_metadata: Vec::new(),
+            }
+        }
+    };
+    //make a vector of files
+    let mut vec_of_metadata: Vec<FileMetaData> = Vec::new();
+    //the cargo.toml and in the folder rs
+    let filename = "cargo.toml".to_string();
+    let metadata = unwrap!(fs::metadata(filename.as_str()));
+    let mtime = FileTime::from_last_modification_time(&metadata);
+    let filedate = format!("{}", mtime);
+    vec_of_metadata.push(FileMetaData { filename, filedate });
+
+    //println!("fs: {}", serde_json::to_string(&v).unwrap());
+
+    let src_dir = format!("{}/src", unwrap!(current_dir.to_str()));
+    for entry in fs::read_dir(src_dir).unwrap() {
+        let entry = entry.unwrap();
+        let path = entry.file_name();
+
+        let filename = format!("src/{:?}", path);
+        let filename = filename.replace("\"", "");
+        //println!("filename: {}", &filename);
+        let metadata = unwrap!(fs::metadata(filename.as_str()));
+        let mtime = FileTime::from_last_modification_time(&metadata);
+        let filedate = format!("{}", mtime);
+        vec_of_metadata.push(FileMetaData { filename, filedate });
+    }
+
+    //println!("fs: {}", serde_json::to_string(&v).unwrap());
+
+    //if files are added or deleted, other files must be also changed
+    //I need to check if the files on the filesystem are the same as in the json
+    for x in &vec_of_metadata {
+        //search in json file
+        let mut is_equal = false;
+        for y in &js_struct.vec_file_metadata {
+            if x.filename == y.filename && x.filedate == y.filedate {
+                is_equal = true;
+                break;
+            } else {
+                //println!("{} {}\n", y.filename, y.filedate);
+            }
+        }
+        if is_equal == false {
+            println!("{} {}", x.filename, x.filedate);
+            is_files_equal = false;
+            break;
+        }
+    }
+
+    println!("is_files_equal: {}", is_files_equal);
+
+    if is_files_equal == false {
+        //region: write version in cargo.toml
+        println!("{}", Green.paint("write version in cargo.toml"));
+        //find version in cargo.toml
+        let cargo_filename = "cargo.toml";
+        let mut cargo_content = unwrap!(fs::read_to_string(cargo_filename));
+        let delim = r#"version = ""#;
+        let option_location = cargo_content.find(delim);
+        if let Some(location) = option_location {
+            let start_version = location + 11;
+            let option_end_quote = find_from(cargo_content.as_str(), start_version, r#"""#);
+            if let Some(end_version) = option_end_quote {
+                //delete all the lines in between the markers
+                let old_version: String = cargo_content.drain(start_version..end_version).collect();
+                println!(r#"old version: "{}""#, old_version.as_str());
+                let date = Local::now();
+                let new_version = format!(
+                    "{}.{}.{}-{}.{}",
+                    date.year() - 2000,
+                    date.month(),
+                    date.day(),
+                    date.hour(),
+                    date.minute()
+                );
+                if new_version != old_version {
+                    println!("new_version {}", new_version);
+                    cargo_content.insert_str(start_version, new_version.as_str());
+                    println!("write file: {}", Yellow.paint(cargo_filename));
+                    let _x = fs::write(cargo_filename, cargo_content);
+                    //the cargo.toml is now different
+                    //correct the vector
+                    let filename = "cargo.toml".to_string();
+                    let metadata = unwrap!(fs::metadata(filename.as_str()));
+                    let mtime = FileTime::from_last_modification_time(&metadata);
+                    let filedate = format!("{}", mtime);
+                    vec_of_metadata.get_mut(0).unwrap().filedate = filedate;
+
+                    println!("save the new file metadata");
+                    let x = LmakeVersionFromDate {
+                        vec_file_metadata: vec_of_metadata,
+                    };
+                    let y = serde_json::to_string(&x).unwrap();
+                    let _f = fs::write(json_filepath, y);
+                }
+            } else {
+                panic!("no end quote for version");
             }
         } else {
-            panic!("no end quote for version");
+            panic!("cargo.toml has no version");
         }
-    } else {
-        panic!("cargo.toml has no version");
     }
+    //endregion
 }
 
 #[allow(clippy::integer_arithmetic)]
