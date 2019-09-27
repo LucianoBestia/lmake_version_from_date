@@ -69,6 +69,7 @@ extern crate clap;
 extern crate glob;
 
 #[allow(unused_imports)]
+use crate::chrono::Timelike;
 use ansi_term::Colour::{Green, Red, Yellow};
 use chrono::{Datelike, Local};
 //use ansi_term::Style;
@@ -114,7 +115,9 @@ fn main() {
             let old_version: String = cargo_content.drain(start_version..end_version).collect();
             println!(r#"old version: "{}""#, old_version.as_str());
             let date = Local::now();
-            let new_version = format!("{}.{}.{}", date.year() - 2000, date.month(), date.day());
+            let new_version = format!("{}.{}.{}-{}.{}", 
+            date.year() - 2000, date.month(), date.day(),
+            date.hour(), date.minute());
             if new_version != old_version {
                 println!("new_version {}", new_version);
                 cargo_content.insert_str(start_version, new_version.as_str());
