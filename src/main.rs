@@ -71,8 +71,7 @@ use chrono::Timelike;
 use chrono::{Datelike, Local};
 use unwrap::unwrap;
 //use ansi_term::Style;
-use clap::App; //Arg
-               //use glob::glob;
+use clap::{App, Arg};
 use filetime::FileTime;
 use serde_derive::{Deserialize, Serialize};
 use std::env;
@@ -100,11 +99,21 @@ struct LmakeVersionFromDate {
 /// The program starts here. No arguments.
 fn main() {
     //define the CLI input line parameters using the clap library
-    let _matches = App::new(env!("CARGO_PKG_NAME"))
+    let matches = App::new(env!("CARGO_PKG_NAME"))
         .version(env!("CARGO_PKG_VERSION"))
         .author(env!("CARGO_PKG_AUTHORS"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
+        .arg(Arg::with_name("service_worker_filename").takes_value(true))
         .get_matches();
+
+    let mut js_filename = "";
+    if let Some(service_worker_filename) = matches.value_of("service_worker_filename") {
+        println!(
+            "Value for service_worker_filename: {}",
+            service_worker_filename
+        );
+        js_filename = service_worker_filename;
+    }
 
     let current_dir = unwrap!(env::current_dir());
 
@@ -240,9 +249,9 @@ fn main() {
         }
         //endregion
         //region: write version in service_worker.js
-        {
+        if js_filename != "" {
             println!("{}", Green.paint("write version in service_worker.js"));
-            let js_filename = "../webfolder/mem5/service_worker.js";
+            let js_filename = js_filename;
             let mut js_content = unwrap!(fs::read_to_string(js_filename));
             let delim = r#"const CACHE_NAME = '"#;
             let delim_len = delim.len();
