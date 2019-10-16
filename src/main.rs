@@ -154,7 +154,7 @@ fn main() {
     //println!("fs: {}", serde_json::to_string(&v).unwrap());
 
     let src_dir = format!("{}/src", unwrap!(current_dir.to_str()));
-    for entry in fs::read_dir(src_dir).unwrap() {
+    for entry in unwrap!(fs::read_dir(src_dir)) {
         let entry = unwrap!(entry);
         let path = entry.file_name();
 
@@ -182,7 +182,7 @@ fn main() {
                 //println!("{} {}\n", y.filename, y.filedate);
             }
         }
-        if is_equal == false {
+        if !is_equal {
             println!("{} {}", x.filename, x.filedate);
             is_files_equal = false;
             break;
@@ -251,7 +251,6 @@ fn main() {
         //region: write version in service_worker.js
         if js_filename != "" {
             println!("{}", Green.paint("write version in service_worker.js"));
-            let js_filename = js_filename;
             let mut js_content = unwrap!(fs::read_to_string(js_filename));
             let delim = r#"const CACHE_NAME = '"#;
             let delim_len = delim.len();
