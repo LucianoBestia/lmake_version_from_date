@@ -1,4 +1,4 @@
-//! **lmake_version_from_date - In cargo.toml writes the version as the date**  
+//! **lmake_version_from_date - In cargo.toml and service_worker.js writes the version as the date**  
 //region: lmake_readme insert "readme.md"
 
 //endregion: lmake_readme insert "readme.md"
@@ -58,7 +58,6 @@
     clippy::multiple_inherent_impl,
 
     clippy::missing_docs_in_private_items,
-    clippy::unused_imports,
 )]
 //endregion
 #![allow(unused_imports)]
@@ -100,10 +99,6 @@ struct LmakeVersionFromDate {
 #[allow(clippy::print_stdout, clippy::integer_arithmetic)]
 /// The program starts here. No arguments.
 fn main() {
-    //this function is different for Windows and for Linux.
-    //Look at the code of this function (2 variations).
-    enable_ansi_support();
-
     //define the CLI input line parameters using the clap library
     let _matches = App::new(env!("CARGO_PKG_NAME"))
         .version(env!("CARGO_PKG_VERSION"))
@@ -151,7 +146,7 @@ fn main() {
 
     let src_dir = format!("{}/src", unwrap!(current_dir.to_str()));
     for entry in fs::read_dir(src_dir).unwrap() {
-        let entry = entry.unwrap();
+        let entry = unwrap!(entry);
         let path = entry.file_name();
 
         let filename = format!("src/{:?}", path);
@@ -187,58 +182,94 @@ fn main() {
 
     println!("is_files_equal: {}", is_files_equal);
 
-    if is_files_equal == false {
-        //region: write version in cargo.toml
-        println!("{}", Green.paint("write version in cargo.toml"));
-        //find version in cargo.toml
-        let cargo_filename = "cargo.toml";
-        let mut cargo_content = unwrap!(fs::read_to_string(cargo_filename));
-        let delim = r#"version = ""#;
-        let option_location = cargo_content.find(delim);
-        if let Some(location) = option_location {
-            let start_version = location + 11;
-            let option_end_quote = find_from(cargo_content.as_str(), start_version, r#"""#);
-            if let Some(end_version) = option_end_quote {
-                //delete all the lines in between the markers
-                let old_version: String = cargo_content.drain(start_version..end_version).collect();
-                println!(r#"old version: "{}""#, old_version.as_str());
-                let date = Local::now();
-                let new_version = format!(
-                    "{}.{}.{}-{}.{}",
-                    date.year() - 2000,
-                    date.month(),
-                    date.day(),
-                    date.hour(),
-                    date.minute()
-                );
-                if new_version != old_version {
-                    println!("new_version {}", new_version);
-                    cargo_content.insert_str(start_version, new_version.as_str());
-                    println!("write file: {}", Yellow.paint(cargo_filename));
-                    let _x = fs::write(cargo_filename, cargo_content);
-                    //the cargo.toml is now different
-                    //correct the vector
-                    let filename = "cargo.toml".to_string();
-                    let metadata = unwrap!(fs::metadata(filename.as_str()));
-                    let mtime = FileTime::from_last_modification_time(&metadata);
-                    let filedate = format!("{}", mtime);
-                    vec_of_metadata.get_mut(0).unwrap().filedate = filedate;
+    if !is_files_equal {
+        let date = Local::now();
+        let new_version = format!(
+            "{}.{}.{}-{}.{}",
+            date.year() - 2000,
+            date.month(),
+            date.day(),
+            date.hour(),
+            date.minute()
+        );
 
-                    println!("save the new file metadata");
-                    let x = LmakeVersionFromDate {
-                        vec_file_metadata: vec_of_metadata,
-                    };
-                    let y = serde_json::to_string(&x).unwrap();
-                    let _f = fs::write(json_filepath, y);
+        //region: write version in cargo.toml
+        {
+            println!("{}", Green.paint("write version in cargo.toml"));
+            //find version in cargo.toml
+            let cargo_filename = "cargo.toml";
+            let mut cargo_content = unwrap!(fs::read_to_string(cargo_filename));
+            let delim = r#"version = ""#;
+            let delim_len = delim.len();
+            let option_location = cargo_content.find(delim);
+            if let Some(location) = option_location {
+                let start_version = location + delim_len;
+                let option_end_quote = find_from(cargo_content.as_str(), start_version, r#"""#);
+                if let Some(end_version) = option_end_quote {
+                    //delete all the characters in between the markers
+                    let old_version: String =
+                        cargo_content.drain(start_version..end_version).collect();
+                    println!(r#"old version: "{}""#, old_version.as_str());
+                    if new_version != old_version {
+                        println!("new_version {}", new_version);
+                        cargo_content.insert_str(start_version, new_version.as_str());
+                        println!("write file: {}", Yellow.paint(cargo_filename));
+                        let _x = fs::write(cargo_filename, cargo_content);
+                        //the cargo.toml is now different
+
+                        //correct the vector
+                        let filename = "cargo.toml".to_string();
+                        let metadata = unwrap!(fs::metadata(filename.as_str()));
+                        let mtime = FileTime::from_last_modification_time(&metadata);
+                        let filedate = format!("{}", mtime);
+                        unwrap!(vec_of_metadata.get_mut(0)).filedate = filedate;
+
+                        println!("save the new file metadata");
+                        let x = LmakeVersionFromDate {
+                            vec_file_metadata: vec_of_metadata,
+                        };
+                        let y = unwrap!(serde_json::to_string(&x));
+                        let _f = fs::write(json_filepath, y);
+                    }
+                } else {
+                    panic!("no end quote for version");
                 }
             } else {
-                panic!("no end quote for version");
+                panic!("cargo.toml has no version");
             }
-        } else {
-            panic!("cargo.toml has no version");
         }
+        //endregion
+        //region: write version in service_worker.js
+        {
+            println!("{}", Green.paint("write version in service_worker.js"));
+            let js_filename = "../webfolder/mem5/service_worker.js";
+            let mut js_content = unwrap!(fs::read_to_string(js_filename));
+            let delim = r#"const CACHE_NAME = '"#;
+            let delim_len = delim.len();
+            let option_location = js_content.find(delim);
+            if let Some(location) = option_location {
+                let start_version = location + delim_len;
+                let option_end_quote = find_from(js_content.as_str(), start_version, r#"';"#);
+                if let Some(end_version) = option_end_quote {
+                    //delete all the characters in between the markers
+                    let old_version: String =
+                        js_content.drain(start_version..end_version).collect();
+                    println!(r#"old version: "{}""#, old_version.as_str());
+                    if new_version != old_version {
+                        println!("new_version {}", new_version);
+                        js_content.insert_str(start_version, new_version.as_str());
+                        println!("write file: {}", Yellow.paint(js_filename));
+                        let _x = fs::write(js_filename, js_content);
+                    }
+                } else {
+                    panic!("no end quote for version");
+                }
+            } else {
+                panic!("service_worker.js has no version");
+            }
+        }
+        //endregion
     }
-    //endregion
 }
 
 #[allow(clippy::integer_arithmetic)]
@@ -254,17 +285,3 @@ fn find_from(rs_content: &str, from: usize, find: &str) -> Option<usize> {
         option_location
     }
 }
-
-//region: different function code for Linux and Windows
-#[cfg(target_family = "windows")]
-///only on windows "enable ansi support" must be called
-pub fn enable_ansi_support() {
-    let _enabled = ansi_term::enable_ansi_support();
-}
-
-#[cfg(target_family = "unix")]
-//on Linux "enable ansi support" must not be called
-pub fn enable_ansi_support() {
-    //do nothing
-}
-//endregion
