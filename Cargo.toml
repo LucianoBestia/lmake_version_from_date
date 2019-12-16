@@ -1,6 +1,6 @@
 [package]
 name = "lmake_version_from_date"
-version = "1.0.0"
+version = "2019.1216.1505"
 authors = ["Luciano Bestia <luciano.bestia@gmail.com>"]
 edition = "2018"
 description="In cargo.toml writes the version as the date."
