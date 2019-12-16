@@ -194,7 +194,7 @@ fn main() {
     if !is_files_equal {
         let date = Local::now();
         let new_version = format!(
-            "{:4}.{:2}{:2}.{:2}{:2}",
+            "{:04}.{:02}{:02}.{:02}{:02}",
             date.year(),
             date.month(),
             date.day(),
