@@ -193,14 +193,27 @@ fn main() {
 
     if !is_files_equal {
         let date = Local::now();
-        let new_version = format!(
-            "{:04}.{:02}{:02}.{:02}{:02}",
-            date.year(),
-            date.month(),
-            date.day(),
-            date.hour(),
-            date.minute()
-        );
+        //in Rust the version must not begin with zero. There is strange situation where is
+        //midnight 00 and the first 9 minutes 01-09.
+        let new_version = if date.hour() == 0 {
+            format!(
+                "{:04}.{}{:02}.{}{}",
+                date.year(),
+                date.month(),
+                date.day(),
+                date.hour(),
+                date.minute()
+            )
+        } else {
+            format!(
+                "{:04}.{}{:02}.{}{:02}",
+                date.year(),
+                date.month(),
+                date.day(),
+                date.hour(),
+                date.minute()
+            )
+        };
 
         //region: write version in cargo.toml
         {

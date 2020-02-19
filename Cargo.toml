@@ -9,7 +9,7 @@ readme = "README.md"
 license = "MIT"
 keywords = ["rust", "make"]
 categories = ["compiling"]
-
+publish = false
 
 [dependencies]
 unwrap = "1.2.1"
