@@ -1,9 +1,53 @@
 //! **lmake_version_from_date - In cargo.toml and service_worker.js writes the version as the date**  
-//region: lmake_readme insert "readme.md"
+// region: lmake_readme include "readme.md" //! A
+//! # lmake_version_from_date  
+//! 
+//! version: 0.3.32  date: 2020-04-29 authors: Luciano Bestia  
+//! **In cargo.toml and service_worker.js writes the version as the date.**
+//! 
+//! 
+//! In cargo.toml writes the version as the date `yyyy.mmdd.HHMM` ex. `2019.1221.2359`.  
+//! For non-library projects, the semver specification is not really useful.  
+//! Having the version as the date is just fine for executables and much more human readable.  
+//! The util exe must be executed in the root project folder where is the cargo.toml.  
+//! 
+//! ## service_worker.js
+//! 
+//! Inside the PWA service worker javascript file is also needed to change the version.  
+//! The program searches for `service_worker.js` and modify the version.  
+//! 
+//! ## no need to change version if no files changed
+//! 
+//! If src/*.rs or cargo.tom. files are not changed from last compile,
+//! than no need to change version.  
+//! This happend is workspaces when one project is modified and the others are not.  
+//! I need to store the dates somewhere.  
+//! Probably the Target folder is ok. The filename will be lmakeversionfromdate.json.
+//! Warning: I don't check if the service worker has changed because it rarely does.  
+//! 
+//! ## Makefile.toml for cargo-make  
+//! 
+//! In `Makefile.toml` for `cargo make` add a task like this:  
+//! 
+//! ```toml
+//! [tasks.dev]
+//! description = "cargo build release"
+//! clear = true
+//! dependencies = [
+//!     "lmake_version_from_date",
+//!     "build_release",
+//!     "post_build",
+//! ]
+//! 
+//! [tasks.lmake_version_from_date]
+//! clear = true
+//! private = true
+//! description = "in cargo.toml change version to today date"
+//! script= ["lmake_version_from_date"]
+//! ```
+// endregion: lmake_readme include "readme.md" //! A
 
-//endregion: lmake_readme insert "readme.md"
-
-//region: Clippy
+// region: Clippy
 #![warn(
     clippy::all,
     clippy::restriction,
@@ -59,7 +103,7 @@
 
     clippy::missing_docs_in_private_items,
 )]
-//endregion
+// endregion
 #![allow(unused_imports)]
 
 //region: use statements
@@ -74,9 +118,7 @@ use unwrap::unwrap;
 use clap::{App, Arg};
 use filetime::FileTime;
 use serde_derive::{Deserialize, Serialize};
-use std::env;
-use std::fs;
-//use std::path::Path; //PathBuf
+use std::{env, fs, io, path::Path};
 //endregion
 
 ///file metadata
@@ -99,21 +141,12 @@ struct LmakeVersionFromDate {
 /// The program starts here. No arguments.
 fn main() {
     //define the CLI input line parameters using the clap library
-    let matches = App::new(env!("CARGO_PKG_NAME"))
+    //let matches =
+    App::new(env!("CARGO_PKG_NAME"))
         .version(env!("CARGO_PKG_VERSION"))
         .author(env!("CARGO_PKG_AUTHORS"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
-        .arg(Arg::with_name("service_worker_filename").takes_value(true))
         .get_matches();
-
-    let mut js_filename = "";
-    if let Some(service_worker_filename) = matches.value_of("service_worker_filename") {
-        println!(
-            "Value for service_worker_filename: {}",
-            service_worker_filename
-        );
-        js_filename = service_worker_filename;
-    }
 
     let current_dir = unwrap!(env::current_dir());
 
@@ -221,11 +254,11 @@ fn main() {
             //find version in cargo.toml
             let cargo_filename = "cargo.toml";
             let mut cargo_content = unwrap!(fs::read_to_string(cargo_filename));
-            let delim = r#"version = ""#;
-            let delim_len = delim.len();
-            let option_location = cargo_content.find(delim);
+            let delimiter = r#"version = ""#;
+            let delimiter_len = delimiter.len();
+            let option_location = cargo_content.find(delimiter);
             if let Some(location) = option_location {
-                let start_version = location + delim_len;
+                let start_version = location + delimiter_len;
                 let option_end_quote = find_from(cargo_content.as_str(), start_version, r#"""#);
                 if let Some(end_version) = option_end_quote {
                     //delete all the characters in between the markers
@@ -260,16 +293,40 @@ fn main() {
                 panic!("cargo.toml has no version");
             }
         }
-        //endregion
+        // endregion
+
         //region: write version in service_worker.js
-        if js_filename != "" {
-            println!("{}", Green.paint("write version in service_worker.js"));
+
+        // search for file service_worker.js
+        // if the parent folder has cargo.toml, than search there
+        // because it is a workspace with members
+        // else search here
+
+        let cargo_filename = "../cargo.toml";
+        let start_dir = if Path::new(cargo_filename).exists() {
+            Path::new("../")
+        } else {
+            Path::new("./")
+        };
+        println!("start_dir: {:?}", start_dir,);
+
+        // fill a vector of files
+        for js_filename in &unwrap!(traverse_dir_with_exclude_dir(
+            start_dir,
+            "/service_worker.js",
+            &vec!["/.git".to_string(), "/target".to_string()]
+        )) {
+            println!(
+                "{} {}",
+                Green.paint("write version in "),
+                Green.paint(js_filename)
+            );
             let mut js_content = unwrap!(fs::read_to_string(js_filename));
-            let delim = r#"const CACHE_NAME = '"#;
-            let delim_len = delim.len();
-            let option_location = js_content.find(delim);
+            let delimiter = r#"const CACHE_NAME = '"#;
+            let delimiter_len = delimiter.len();
+            let option_location = js_content.find(delimiter);
             if let Some(location) = option_location {
-                let start_version = location + delim_len;
+                let start_version = location + delimiter_len;
                 let option_end_quote = find_from(js_content.as_str(), start_version, r#"';"#);
                 if let Some(end_version) = option_end_quote {
                     //delete all the characters in between the markers
@@ -294,7 +351,7 @@ fn main() {
 }
 
 #[allow(clippy::integer_arithmetic)]
-///find from
+/// in string find from position
 fn find_from(rs_content: &str, from: usize, find: &str) -> Option<usize> {
     let slice01 = rs_content.get(from..).unwrap();
     let option_location = slice01.find(find);
@@ -305,4 +362,39 @@ fn find_from(rs_content: &str, from: usize, find: &str) -> Option<usize> {
         //return Option with none
         option_location
     }
+}
+
+/// traverse dir (sub-dir) with exclude dir
+/// the find_file and the exclude dir strings must start with /
+fn traverse_dir_with_exclude_dir(
+    dir: &Path,
+    find_file: &str,
+    exclude_dirs: &Vec<String>,
+) -> io::Result<Vec<String>> {
+    let mut v = Vec::new();
+    if dir.is_dir() {
+        for entry in fs::read_dir(dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            let str_path = unwrap!(path.to_str());
+            if path.is_dir() {
+                let mut is_excluded = false;
+                for excl in exclude_dirs {
+                    if str_path.ends_with(excl) {
+                        is_excluded = true;
+                        break;
+                    }
+                }
+                if !is_excluded {
+                    let mut sub_v = traverse_dir_with_exclude_dir(&path, find_file, exclude_dirs)?;
+                    v.append(&mut sub_v);
+                }
+            } else {
+                if str_path.ends_with(find_file) {
+                    v.push(str_path.to_string());
+                }
+            }
+        }
+    }
+    Ok(v)
 }

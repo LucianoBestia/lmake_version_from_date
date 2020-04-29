@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `lmake_version_from_date` crate."><meta name="keywords" content="rust, rustlang, rust-lang, lmake_version_from_date"><title>lmake_version_from_date - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="shortcut icon" href="../favicon.ico"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../lmake_version_from_date/index.html'><div class='logo-container'><img src='../rust-logo.png' alt='logo'></div></a><p class='location'>Crate lmake_version_from_date</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all lmake_version_from_date's items</p></a><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'lmake_version_from_date', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/lmake_version_from_date/main.rs.html#1-400' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>lmake_version_from_date</a></span></h1><div class='docblock'><p><strong>lmake_version_from_date - In cargo.toml and service_worker.js writes the version as the date</strong></p>
+<h1 id="lmake_version_from_date" class="section-header"><a href="#lmake_version_from_date">lmake_version_from_date</a></h1>
+<p>version: 0.3.32  date: 2020-04-29 authors: Luciano Bestia<br />
+<strong>In cargo.toml and service_worker.js writes the version as the date.</strong></p>
+<p>In cargo.toml writes the version as the date <code>yyyy.mmdd.HHMM</code> ex. <code>2019.1221.2359</code>.<br />
+For non-library projects, the semver specification is not really useful.<br />
+Having the version as the date is just fine for executables and much more human readable.<br />
+The util exe must be executed in the root project folder where is the cargo.toml.</p>
+<h2 id="service_workerjs" class="section-header"><a href="#service_workerjs">service_worker.js</a></h2>
+<p>Inside the PWA service worker javascript file is also needed to change the version.<br />
+The program searches for <code>service_worker.js</code> and modify the version.</p>
+<h2 id="no-need-to-change-version-if-no-files-changed" class="section-header"><a href="#no-need-to-change-version-if-no-files-changed">no need to change version if no files changed</a></h2>
+<p>If src/*.rs or cargo.tom. files are not changed from last compile,
+than no need to change version.<br />
+This happend is workspaces when one project is modified and the others are not.<br />
+I need to store the dates somewhere.<br />
+Probably the Target folder is ok. The filename will be lmakeversionfromdate.json.
+Warning: I don't check if the service worker has changed because it rarely does.</p>
+<h2 id="makefiletoml-for-cargo-make" class="section-header"><a href="#makefiletoml-for-cargo-make">Makefile.toml for cargo-make</a></h2>
+<p>In <code>Makefile.toml</code> for <code>cargo make</code> add a task like this:</p>
+<pre><code class="language-toml">[tasks.dev]
+description = &quot;cargo build release&quot;
+clear = true
+dependencies = [
+    &quot;lmake_version_from_date&quot;,
+    &quot;build_release&quot;,
+    &quot;post_build&quot;,
+]
+ 
+[tasks.lmake_version_from_date]
+clear = true
+private = true
+description = &quot;in cargo.toml change version to today date&quot;
+script= [&quot;lmake_version_from_date&quot;]
+</code></pre>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.FileMetaData.html" title='lmake_version_from_date::FileMetaData struct'>FileMetaData</a></td><td class='docblock-short'><p>file metadata</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.LmakeVersionFromDate.html" title='lmake_version_from_date::LmakeVersionFromDate struct'>LmakeVersionFromDate</a></td><td class='docblock-short'><p>the struct that is in the file lmakeversionfromdate.json</p>
+</td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table><tr class='module-item'><td><a class="fn" href="fn.find_from.html" title='lmake_version_from_date::find_from fn'>find_from</a></td><td class='docblock-short'><p>in string find from position</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.main.html" title='lmake_version_from_date::main fn'>main</a></td><td class='docblock-short'><p>The program starts here. No arguments.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.traverse_dir_with_exclude_dir.html" title='lmake_version_from_date::traverse_dir_with_exclude_dir fn'>traverse_dir_with_exclude_dir</a></td><td class='docblock-short'><p>traverse dir (sub-dir) with exclude dir
+the find_file and the exclude dir strings must start with /</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "lmake_version_from_date";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>
