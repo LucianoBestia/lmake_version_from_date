@@ -25,6 +25,13 @@ I need to store the dates somewhere.
 Probably the Target folder is ok. The filename will be lmakeversionfromdate.json.
 Warning: I don't check if the service worker has changed because it rarely does.  
 
+## Install
+																		  
+																						   
+																				   
+
+`cargo install lmake_version_from_date`  
+
 ## Makefile.toml for cargo-make  
 
 In `Makefile.toml` for `cargo make` add a task like this:  

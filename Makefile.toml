@@ -170,7 +170,7 @@ script= ["lmake_semver --increment=patch"]
 description = "in cargo.toml change version to today date"
 clear = true
 private = true
-script= ["lmake_version_from_date ../webfolder/${CARGO_MAKE_CRATE_NAME}/service_worker.js"]
+script= ["lmake_version_from_date"]
 
 [tasks.build_release]
 description = "build for release"
