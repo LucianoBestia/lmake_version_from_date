@@ -1,7 +1,7 @@
 # lmake_version_from_date  
 
 [comment]: # (lmake_readme cargo.toml data start)
-version: 0.3.32  date: 2020-04-29 authors: Luciano Bestia  
+version: 0.3.37  date: 2020-05-21 authors: Luciano Bestia  
 **In cargo.toml and service_worker.js writes the version as the date.**
 
 [comment]: # (lmake_readme cargo.toml data end)  

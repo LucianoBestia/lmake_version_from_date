@@ -1,10 +1,5 @@
 # lmake_/version_from_date/Makefile.toml
 # https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml
-
-# DIFFERENT VARIANTS of makefile.toml
-# "Libraries" lib.rs differ from "binaries" main.rs
-# "wasm" has special commands for build and other
-# "PWA" has a version number in the worker that must be incremented
  
 [config]
 skip_core_tasks = true
@@ -32,24 +27,40 @@ skip_core_tasks = true
 	"post_build_dev",
 	]
 
+	[tasks.test]
+    description = "cargo test"
+    clear = true
+    script = [
+        "echo $ cargo test",
+        "cargo test",
+    ]				
+	
     [tasks.release]
     description = "cargo build release"
     clear = true
     dependencies = [
 		# Binaries version is date
-        # "lmake_version_from_date"
+        # "lmake_version_from_date",
         # Library version is semver
         "semver_increment_patch",	
         "build_release",
 		"post_build_release",
     ]
 
-    [tasks.run_rel1]
+    [tasks.run_rel0]
     description = "run target/release/${CARGO_MAKE_CRATE_NAME}"
     clear = true
     script = [
-        "echo target/release/${CARGO_MAKE_CRATE_NAME}",
+        "echo $ target/release/${CARGO_MAKE_CRATE_NAME}",
         "target/release/${CARGO_MAKE_CRATE_NAME} ",
+    ]
+
+    [tasks.run_rel1]
+    description = "target/release/${CARGO_MAKE_CRATE_NAME} argument1"
+    clear = true
+    script = [
+        "echo $ target/release/${CARGO_MAKE_CRATE_NAME} argument1",
+        "target/release/${CARGO_MAKE_CRATE_NAME} argument1",
     ]
 	
     [tasks.fmt]
@@ -86,15 +97,20 @@ skip_core_tasks = true
     [tasks.gitpush]
     description = "push the commits to github, uses ssh agent"
     clear = true
-    script = [
+	script = [
+        "echo $ git push",
         "git push",
+        "echo after successful git push, use $ cargo make crates_io_dry_run",
     ]
 
 	[tasks.crates_io_dry_run]
 	clear = true
 	description = "prepare before publishing to crates.io with dry-run"
-	command = "cargo"
-	args = ["publish","--dry-run"]
+	script = [
+        "echo $ cargo publish --dry-run",
+        "cargo publish --dry-run",
+        "echo after successful dry-run, use $ cargo make crates_io_publish",
+    ]
 
     [tasks.crates_io_publish]
 	clear = true
@@ -130,7 +146,7 @@ script= [
 "echo 06. cargo make release - build release version, increment semver patch incargo.toml",
 "echo 07. ......run the release build. Cargo make tasks LIST is below.",
 "echo ",
-"echo 08. cargo make doc - includea from cargo.toml to readme.md and from readme.md to main.rs or lib.rs, generates doc and copies to docs folder.",
+"echo 08. cargo make doc - includes from cargo.toml to readme.md and from readme.md to main.rs or lib.rs, generates doc and copies to docs folder.",
 "echo 09. cargo make fmt commit_message - runs git commit and rustfmt",
 "echo 10. cargo make sshadd - run only once - adds identity to ssh-agent for git and publish",
 "echo 11. cargo make gitpush - git push",
@@ -153,7 +169,7 @@ script= [
 [tasks.build_dev]
 clear = true
 private = true
-description = "build in dev mode"
+description = "build in dev/debug mode"
 command = "cargo"
 args = ["build"]
 		  
@@ -176,8 +192,11 @@ script= ["lmake_version_from_date"]
 description = "build for release"
 clear = true
 private = true
-command = "cargo"
-args = ["build","--release"]
+script = [
+    "echo $ cargo build --release",
+    "cargo build --release",
+    "echo after successful testing, run $ cargo make doc",
+]
 
 [tasks.cargo_audit]
 description = "cargo audit - for security vulnerabilities"
@@ -197,8 +216,12 @@ args = ["commit","-a","-m", "${@}"]
 description = "cargo fmt"
 clear = true
 private = true
-command = "cargo"
-args = ["fmt"]
+script = [
+    "echo $ cargo fmt",
+    "cargo fmt",
+    "echo after successful fmt and git commit, run $ cargo make gitpush",
+    "echo if the fmt makes changes, just run the same command again."         
+]
 
 [tasks.include_readme]
 clear = true
@@ -210,15 +233,21 @@ script= ["lmake_readme"]
 clear = true
 private = true
 description = "call cargo doc"
-command="cargo"
-args=["doc","--no-deps","--document-private-items"]
+script=[
+    "echo $ cargo doc --no-deps --document-private-items",
+    "cargo doc --no-deps --document-private-items",
+    "echo $ codetour_export_to_md",
+    "codetour_export_to_md",
+] 
 
 [tasks.doc_copy]
 clear = true
 private = true
 description = "copy doc folder as docs (out of folder target), so it can be git comitted"
 script = [
-    "\\rsync -avz --delete-after target/doc/*  docs/"
+    "echo $ \\rsync -avz --delete-after target/doc/*  docs/",
+    "\\rsync -avz --delete-after target/doc/*  docs/",
+    "echo after successful doc, run cargo make fmt msg_for_commit",
 ]
 
 [tasks.gittag]
@@ -226,7 +255,7 @@ clear = true
 private = true
 description = "git tag -f -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}"
 script = [
-	"echo git tag -f -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}",
+	 "echo $ git tag -f -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}",
     "git tag -f -a v${CARGO_MAKE_CRATE_VERSION} -m version_${CARGO_MAKE_CRATE_VERSION}"
 ]		  
 
@@ -234,17 +263,21 @@ script = [
 clear = true
 private = true
 description = "publish to crates.io."
-command = "cargo"
-args = ["publish"]
+script = [
+	"echo $ cargo publish",
+	"cargo publish",
+]
 
 [tasks.post_build_dev]
 clear=true
 private=true
-script = ["echo build dev end",
+script = [
+	"echo post build dev",
 ]
 
 [tasks.post_build_release]
 clear=true
 private=true
-script = ["echo build release end",
+script = [
+	"echo post build release",
 ]

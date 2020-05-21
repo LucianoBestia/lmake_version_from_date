@@ -2,7 +2,7 @@
 // region: lmake_readme include "readme.md" //! A
 //! # lmake_version_from_date  
 //! 
-//! version: 0.3.32  date: 2020-04-29 authors: Luciano Bestia  
+//! version: 0.3.37  date: 2020-05-21 authors: Luciano Bestia  
 //! **In cargo.toml and service_worker.js writes the version as the date.**
 //! 
 //! 
@@ -25,6 +25,13 @@
 //! Probably the Target folder is ok. The filename will be lmakeversionfromdate.json.
 //! Warning: I don't check if the service worker has changed because it rarely does.  
 //! 
+//! ## Install
+//! 																		  
+//! 																						   
+//! 																				   
+//! 
+//! `cargo install lmake_version_from_date`  
+//! 
 //! ## Makefile.toml for cargo-make  
 //! 
 //! In `Makefile.toml` for `cargo make` add a task like this:  
@@ -45,6 +52,14 @@
 //! description = "in cargo.toml change version to today date"
 //! script= ["lmake_version_from_date"]
 //! ```
+//! 
+//! ## cargo crev reviews and advisory
+//! 
+//! It is recommended to always use [cargo-crev](https://github.com/crev-dev/cargo-crev)  
+//! to verify the trustworthiness of each of your dependencies.  
+//! Please, spread this info.  
+//! On the web use this url to read crate reviews. Example:  
+//! <https://bestia.dev/cargo_crev_web/query/num-traits>  
 // endregion: lmake_readme include "readme.md" //! A
 
 // region: Clippy
@@ -108,11 +123,10 @@
 
 //region: use statements
 use ansi_term::Colour::{Green, Red, Yellow};
-use chrono::offset::Utc;
 use chrono::prelude::*;
 use chrono::DateTime;
 use chrono::Timelike;
-use chrono::{Datelike, Local};
+use chrono::{Datelike, Utc};
 use unwrap::unwrap;
 //use ansi_term::Style;
 use clap::{App, Arg};
@@ -225,29 +239,8 @@ fn main() {
     println!("is_files_equal: {}", is_files_equal);
 
     if !is_files_equal {
-        let date = Local::now();
-        //in Rust the version must not begin with zero. There is strange situation where is
-        //midnight 00 and the first 9 minutes 01-09.
-        let new_version = if date.hour() == 0 {
-            format!(
-                "{:04}.{}{:02}.{}{}",
-                date.year(),
-                date.month(),
-                date.day(),
-                date.hour(),
-                date.minute()
-            )
-        } else {
-            format!(
-                "{:04}.{}{:02}.{}{:02}",
-                date.year(),
-                date.month(),
-                date.day(),
-                date.hour(),
-                date.minute()
-            )
-        };
-
+        let date = Utc::now();
+        let new_version = version_from_date(date);
         //region: write version in cargo.toml
         {
             println!("{}", Green.paint("write version in cargo.toml"));
@@ -350,6 +343,34 @@ fn main() {
     }
 }
 
+/// converts a date to a version
+pub fn version_from_date(date: DateTime<Utc>)->String{
+    // in Rust the version must not begin with zero. 
+    // There is an exceptional situation where is midnight 00.
+    let new_version = if date.hour() == 0 {
+        format!(
+            "{:04}.{}{:02}.{}",
+            date.year(),
+            date.month(),
+            date.day(),
+
+            date.minute()
+        )
+    } else {
+        format!(
+            "{:04}.{}{:02}.{}{:02}",
+            date.year(),
+            date.month(),
+            date.day(),
+            date.hour(),
+            date.minute()
+        )
+    };
+    //return
+    new_version
+}
+
+
 #[allow(clippy::integer_arithmetic)]
 /// in string find from position
 fn find_from(rs_content: &str, from: usize, find: &str) -> Option<usize> {
@@ -397,4 +418,17 @@ fn traverse_dir_with_exclude_dir(
         }
     }
     Ok(v)
+}
+
+#[cfg(test)]
+mod test{
+    use super::*;
+
+    #[test]
+    pub fn test_date_to_version(){
+        let date_time = Utc.ymd(2020,5,22).and_hms(00,34,0);
+        
+        let version = version_from_date(date_time);
+        assert_eq!(version,"2020.522.34");
+    }
 }
