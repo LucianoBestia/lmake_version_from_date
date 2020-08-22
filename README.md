@@ -7,7 +7,7 @@ version: 0.3.37  date: 2020-05-21 authors: Luciano Bestia
 [comment]: # (lmake_readme cargo.toml data end)  
 
 [comment]: # (lmake_lines_of_code start)
-[![Lines in Rust code](https://img.shields.io/badge/Lines_in_Rust-280-green.svg)](https://github.com/LucianoBestia/lmake_version_from_date/)
+[![Lines in Rust code](https://img.shields.io/badge/Lines_in_Rust-278-green.svg)](https://github.com/LucianoBestia/lmake_version_from_date/)
 [![Lines in Doc comments](https://img.shields.io/badge/Lines_in_Doc_comments-69-blue.svg)](https://github.com/LucianoBestia/lmake_version_from_date/)
 [![Lines in Comments](https://img.shields.io/badge/Lines_in_comments-73-purple.svg)](https://github.com/LucianoBestia/lmake_version_from_date/)
 [![Lines in examples](https://img.shields.io/badge/Lines_in_examples-0-yellow.svg)](https://github.com/LucianoBestia/lmake_version_from_date/)

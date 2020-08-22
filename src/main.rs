@@ -1,41 +1,41 @@
 //! **lmake_version_from_date - In Cargo.toml and service_worker.js writes the version as the date**  
 // region: lmake_readme include "readme.md" //! A
 //! # lmake_version_from_date  
-//! 
+//!
 //! version: 0.3.37  date: 2020-05-21 authors: Luciano Bestia  
 //! **In Cargo.toml and service_worker.js writes the version as the date.**
-//! 
-//! 
+//!
+//!
 //! In Cargo.toml writes the version as the date `yyyy.mmdd.HHMM` ex. `2019.1221.2359`.  
 //! For non-library projects, the semver specification is not really useful.  
 //! Having the version as the date is just fine for executables and much more human readable.  
 //! The util exe must be executed in the root project folder where is the Cargo.toml.  
-//! 
+//!
 //! ## service_worker.js
-//! 
+//!
 //! Inside the PWA service worker javascript file is also needed to change the version.  
 //! The program searches for `service_worker.js` and modify the version.  
-//! 
+//!
 //! ## no need to change version if no files changed
-//! 
+//!
 //! If src/*.rs or cargo.tom. files are not changed from last compile,
 //! than no need to change version.  
 //! This happend is workspaces when one project is modified and the others are not.  
 //! I need to store the dates somewhere.  
 //! Probably the Target folder is ok. The filename will be lmakeversionfromdate.json.
 //! Warning: I don't check if the service worker has changed because it rarely does.  
-//! 
+//!
 //! ## Install
 //! 																		  
 //! 																						   
 //! 																				   
-//! 
+//!
 //! `cargo install lmake_version_from_date`  
-//! 
+//!
 //! ## Makefile.toml for cargo-make  
-//! 
+//!
 //! In `Makefile.toml` for `cargo make` add a task like this:  
-//! 
+//!
 //! ```toml
 //! [tasks.dev]
 //! description = "cargo build release"
@@ -45,16 +45,16 @@
 //!     "build_release",
 //!     "post_build",
 //! ]
-//! 
+//!
 //! [tasks.lmake_version_from_date]
 //! clear = true
 //! private = true
 //! description = "in Cargo.toml change version to today date"
 //! script= ["lmake_version_from_date"]
 //! ```
-//! 
+//!
 //! ## cargo crev reviews and advisory
-//! 
+//!
 //! It is recommended to always use [cargo-crev](https://github.com/crev-dev/cargo-crev)  
 //! to verify the trustworthiness of each of your dependencies.  
 //! Please, spread this info.  
@@ -344,8 +344,8 @@ fn main() {
 }
 
 /// converts a date to a version
-pub fn version_from_date(date: DateTime<Utc>)->String{
-    // in Rust the version must not begin with zero. 
+pub fn version_from_date(date: DateTime<Utc>) -> String {
+    // in Rust the version must not begin with zero.
     // There is an exceptional situation where is midnight 00.
     let new_version = if date.hour() == 0 {
         format!(
@@ -353,7 +353,6 @@ pub fn version_from_date(date: DateTime<Utc>)->String{
             date.year(),
             date.month(),
             date.day(),
-
             date.minute()
         )
     } else {
@@ -369,7 +368,6 @@ pub fn version_from_date(date: DateTime<Utc>)->String{
     //return
     new_version
 }
-
 
 #[allow(clippy::integer_arithmetic)]
 /// in string find from position
@@ -421,14 +419,14 @@ fn traverse_dir_with_exclude_dir(
 }
 
 #[cfg(test)]
-mod test{
+mod test {
     use super::*;
 
     #[test]
-    pub fn test_date_to_version(){
-        let date_time = Utc.ymd(2020,5,22).and_hms(00,34,0);
-        
+    pub fn test_date_to_version() {
+        let date_time = Utc.ymd(2020, 5, 22).and_hms(00, 34, 0);
+
         let version = version_from_date(date_time);
-        assert_eq!(version,"2020.522.34");
+        assert_eq!(version, "2020.522.34");
     }
 }

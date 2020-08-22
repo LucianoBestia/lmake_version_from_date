@@ -430,47 +430,45 @@
 <span id="430">430</span>
 <span id="431">431</span>
 <span id="432">432</span>
-<span id="433">433</span>
-<span id="434">434</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! **lmake_version_from_date - In Cargo.toml and service_worker.js writes the version as the date**  </span>
 <span class="comment">// region: lmake_readme include &quot;readme.md&quot; //! A</span>
 <span class="doccomment">//! # lmake_version_from_date  </span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! version: 0.3.37  date: 2020-05-21 authors: Luciano Bestia  </span>
 <span class="doccomment">//! **In Cargo.toml and service_worker.js writes the version as the date.**</span>
-<span class="doccomment">//! </span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! In Cargo.toml writes the version as the date `yyyy.mmdd.HHMM` ex. `2019.1221.2359`.  </span>
 <span class="doccomment">//! For non-library projects, the semver specification is not really useful.  </span>
 <span class="doccomment">//! Having the version as the date is just fine for executables and much more human readable.  </span>
 <span class="doccomment">//! The util exe must be executed in the root project folder where is the Cargo.toml.  </span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! ## service_worker.js</span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! Inside the PWA service worker javascript file is also needed to change the version.  </span>
 <span class="doccomment">//! The program searches for `service_worker.js` and modify the version.  </span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! ## no need to change version if no files changed</span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! If src/*.rs or cargo.tom. files are not changed from last compile,</span>
 <span class="doccomment">//! than no need to change version.  </span>
 <span class="doccomment">//! This happend is workspaces when one project is modified and the others are not.  </span>
 <span class="doccomment">//! I need to store the dates somewhere.  </span>
 <span class="doccomment">//! Probably the Target folder is ok. The filename will be lmakeversionfromdate.json.</span>
 <span class="doccomment">//! Warning: I don&#39;t check if the service worker has changed because it rarely does.  </span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! ## Install</span>
 <span class="doccomment">//! 																		  </span>
 <span class="doccomment">//! 																						   </span>
 <span class="doccomment">//! 																				   </span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! `cargo install lmake_version_from_date`  </span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! ## Makefile.toml for cargo-make  </span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! In `Makefile.toml` for `cargo make` add a task like this:  </span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! ```toml</span>
 <span class="doccomment">//! [tasks.dev]</span>
 <span class="doccomment">//! description = &quot;cargo build release&quot;</span>
@@ -480,16 +478,16 @@
 <span class="doccomment">//!     &quot;build_release&quot;,</span>
 <span class="doccomment">//!     &quot;post_build&quot;,</span>
 <span class="doccomment">//! ]</span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! [tasks.lmake_version_from_date]</span>
 <span class="doccomment">//! clear = true</span>
 <span class="doccomment">//! private = true</span>
 <span class="doccomment">//! description = &quot;in Cargo.toml change version to today date&quot;</span>
 <span class="doccomment">//! script= [&quot;lmake_version_from_date&quot;]</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! ## cargo crev reviews and advisory</span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! It is recommended to always use [cargo-crev](https://github.com/crev-dev/cargo-crev)  </span>
 <span class="doccomment">//! to verify the trustworthiness of each of your dependencies.  </span>
 <span class="doccomment">//! Please, spread this info.  </span>
@@ -779,8 +777,8 @@
 }
 
 <span class="doccomment">/// converts a date to a version</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">version_from_date</span>(<span class="ident">date</span>: <span class="ident">DateTime</span><span class="op">&lt;</span><span class="ident">Utc</span><span class="op">&gt;</span>)<span class="op">-</span><span class="op">&gt;</span><span class="ident">String</span>{
-    <span class="comment">// in Rust the version must not begin with zero. </span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">version_from_date</span>(<span class="ident">date</span>: <span class="ident">DateTime</span><span class="op">&lt;</span><span class="ident">Utc</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+    <span class="comment">// in Rust the version must not begin with zero.</span>
     <span class="comment">// There is an exceptional situation where is midnight 00.</span>
     <span class="kw">let</span> <span class="ident">new_version</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">date</span>.<span class="ident">hour</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
         <span class="macro">format</span><span class="macro">!</span>(
@@ -788,7 +786,6 @@
             <span class="ident">date</span>.<span class="ident">year</span>(),
             <span class="ident">date</span>.<span class="ident">month</span>(),
             <span class="ident">date</span>.<span class="ident">day</span>(),
-
             <span class="ident">date</span>.<span class="ident">minute</span>()
         )
     } <span class="kw">else</span> {
@@ -804,7 +801,6 @@
     <span class="comment">//return</span>
     <span class="ident">new_version</span>
 }
-
 
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">integer_arithmetic</span>)]</span>
 <span class="doccomment">/// in string find from position</span>
@@ -856,15 +852,16 @@
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">test</span>{
+<span class="kw">mod</span> <span class="ident">test</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_date_to_version</span>(){
-        <span class="kw">let</span> <span class="ident">date_time</span> <span class="op">=</span> <span class="ident">Utc</span>.<span class="ident">ymd</span>(<span class="number">2020</span>,<span class="number">5</span>,<span class="number">22</span>).<span class="ident">and_hms</span>(<span class="number">00</span>,<span class="number">34</span>,<span class="number">0</span>);
-        
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_date_to_version</span>() {
+        <span class="kw">let</span> <span class="ident">date_time</span> <span class="op">=</span> <span class="ident">Utc</span>.<span class="ident">ymd</span>(<span class="number">2020</span>, <span class="number">5</span>, <span class="number">22</span>).<span class="ident">and_hms</span>(<span class="number">00</span>, <span class="number">34</span>, <span class="number">0</span>);
+
         <span class="kw">let</span> <span class="ident">version</span> <span class="op">=</span> <span class="ident">version_from_date</span>(<span class="ident">date_time</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">version</span>,<span class="string">&quot;2020.522.34&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">version</span>, <span class="string">&quot;2020.522.34&quot;</span>);
     }
-}</pre></div>
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "lmake_version_from_date";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
