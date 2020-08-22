@@ -6,6 +6,15 @@ version: 0.3.37  date: 2020-05-21 authors: Luciano Bestia
 
 [comment]: # (lmake_readme cargo.toml data end)  
 
+[comment]: # (lmake_lines_of_code start)
+[![Lines in Rust code](https://img.shields.io/badge/Lines_in_Rust-280-green.svg)](https://github.com/LucianoBestia/lmake_version_from_date/)
+[![Lines in Doc comments](https://img.shields.io/badge/Lines_in_Doc_comments-69-blue.svg)](https://github.com/LucianoBestia/lmake_version_from_date/)
+[![Lines in Comments](https://img.shields.io/badge/Lines_in_comments-73-purple.svg)](https://github.com/LucianoBestia/lmake_version_from_date/)
+[![Lines in examples](https://img.shields.io/badge/Lines_in_examples-0-yellow.svg)](https://github.com/LucianoBestia/lmake_version_from_date/)
+[![Lines in tests](https://img.shields.io/badge/Lines_in_tests-11-orange.svg)](https://github.com/LucianoBestia/lmake_version_from_date/)
+
+[comment]: # (lmake_lines_of_code end)
+
 In cargo.toml writes the version as the date `yyyy.mmdd.HHMM` ex. `2019.1221.2359`.  
 For non-library projects, the semver specification is not really useful.  
 Having the version as the date is just fine for executables and much more human readable.  

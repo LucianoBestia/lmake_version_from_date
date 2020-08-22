@@ -1,15 +1,15 @@
-//! **lmake_version_from_date - In cargo.toml and service_worker.js writes the version as the date**  
+//! **lmake_version_from_date - In Cargo.toml and service_worker.js writes the version as the date**  
 // region: lmake_readme include "readme.md" //! A
 //! # lmake_version_from_date  
 //! 
 //! version: 0.3.37  date: 2020-05-21 authors: Luciano Bestia  
-//! **In cargo.toml and service_worker.js writes the version as the date.**
+//! **In Cargo.toml and service_worker.js writes the version as the date.**
 //! 
 //! 
-//! In cargo.toml writes the version as the date `yyyy.mmdd.HHMM` ex. `2019.1221.2359`.  
+//! In Cargo.toml writes the version as the date `yyyy.mmdd.HHMM` ex. `2019.1221.2359`.  
 //! For non-library projects, the semver specification is not really useful.  
 //! Having the version as the date is just fine for executables and much more human readable.  
-//! The util exe must be executed in the root project folder where is the cargo.toml.  
+//! The util exe must be executed in the root project folder where is the Cargo.toml.  
 //! 
 //! ## service_worker.js
 //! 
@@ -49,7 +49,7 @@
 //! [tasks.lmake_version_from_date]
 //! clear = true
 //! private = true
-//! description = "in cargo.toml change version to today date"
+//! description = "in Cargo.toml change version to today date"
 //! script= ["lmake_version_from_date"]
 //! ```
 //! 
@@ -138,7 +138,7 @@ use std::{env, fs, io, path::Path};
 ///file metadata
 #[derive(Serialize, Deserialize)]
 struct FileMetaData {
-    //filename with path from cargo.toml folder
+    //filename with path from Cargo.toml folder
     filename: String,
     //filedate from file
     filedate: String,
@@ -191,8 +191,8 @@ fn main() {
     };
     //make a vector of files
     let mut vec_of_metadata: Vec<FileMetaData> = Vec::new();
-    //the cargo.toml and in the folder rs
-    let filename = "cargo.toml".to_string();
+    //the Cargo.toml and in the folder rs
+    let filename = "Cargo.toml".to_string();
     let metadata = unwrap!(fs::metadata(filename.as_str()));
     let mtime = FileTime::from_last_modification_time(&metadata);
     let filedate = format!("{}", mtime);
@@ -241,11 +241,11 @@ fn main() {
     if !is_files_equal {
         let date = Utc::now();
         let new_version = version_from_date(date);
-        //region: write version in cargo.toml
+        //region: write version in Cargo.toml
         {
-            println!("{}", Green.paint("write version in cargo.toml"));
-            //find version in cargo.toml
-            let cargo_filename = "cargo.toml";
+            println!("{}", Green.paint("write version in Cargo.toml"));
+            //find version in Cargo.toml
+            let cargo_filename = "Cargo.toml";
             let mut cargo_content = unwrap!(fs::read_to_string(cargo_filename));
             let delimiter = r#"version = ""#;
             let delimiter_len = delimiter.len();
@@ -263,10 +263,10 @@ fn main() {
                         cargo_content.insert_str(start_version, new_version.as_str());
                         println!("write file: {}", Yellow.paint(cargo_filename));
                         let _x = fs::write(cargo_filename, cargo_content);
-                        //the cargo.toml is now different
+                        //the Cargo.toml is now different
 
                         //correct the vector
-                        let filename = "cargo.toml".to_string();
+                        let filename = "Cargo.toml".to_string();
                         let metadata = unwrap!(fs::metadata(filename.as_str()));
                         let mtime = FileTime::from_last_modification_time(&metadata);
                         let filedate = format!("{}", mtime);
@@ -283,7 +283,7 @@ fn main() {
                     panic!("no end quote for version");
                 }
             } else {
-                panic!("cargo.toml has no version");
+                panic!("Cargo.toml has no version");
             }
         }
         // endregion
@@ -291,11 +291,11 @@ fn main() {
         //region: write version in service_worker.js
 
         // search for file service_worker.js
-        // if the parent folder has cargo.toml, than search there
+        // if the parent folder has Cargo.toml, than search there
         // because it is a workspace with members
         // else search here
 
-        let cargo_filename = "../cargo.toml";
+        let cargo_filename = "../Cargo.toml";
         let start_dir = if Path::new(cargo_filename).exists() {
             Path::new("../")
         } else {

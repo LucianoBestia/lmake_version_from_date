@@ -1,9 +1,9 @@
 [package]
 name = "lmake_version_from_date"
-version = "0.3.38"
+version = "0.3.39"
 authors = ["Luciano Bestia <luciano.bestia@gmail.com>"]
 edition = "2018"
-description = "In cargo.toml and service_worker.js writes the version as the date."
+description = "In Cargo.toml and service_worker.js writes the version as the date."
 repository = "https://github.com/LucianoBestia/lmake"
 readme = "README.md"
 license = "MIT"

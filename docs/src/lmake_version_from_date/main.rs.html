@@ -398,19 +398,53 @@
 <span id="398">398</span>
 <span id="399">399</span>
 <span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="doccomment">//! **lmake_version_from_date - In cargo.toml and service_worker.js writes the version as the date**  </span>
+<span class="doccomment">//! **lmake_version_from_date - In Cargo.toml and service_worker.js writes the version as the date**  </span>
 <span class="comment">// region: lmake_readme include &quot;readme.md&quot; //! A</span>
 <span class="doccomment">//! # lmake_version_from_date  </span>
 <span class="doccomment">//! </span>
-<span class="doccomment">//! version: 0.3.32  date: 2020-04-29 authors: Luciano Bestia  </span>
-<span class="doccomment">//! **In cargo.toml and service_worker.js writes the version as the date.**</span>
+<span class="doccomment">//! version: 0.3.37  date: 2020-05-21 authors: Luciano Bestia  </span>
+<span class="doccomment">//! **In Cargo.toml and service_worker.js writes the version as the date.**</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! </span>
-<span class="doccomment">//! In cargo.toml writes the version as the date `yyyy.mmdd.HHMM` ex. `2019.1221.2359`.  </span>
+<span class="doccomment">//! In Cargo.toml writes the version as the date `yyyy.mmdd.HHMM` ex. `2019.1221.2359`.  </span>
 <span class="doccomment">//! For non-library projects, the semver specification is not really useful.  </span>
 <span class="doccomment">//! Having the version as the date is just fine for executables and much more human readable.  </span>
-<span class="doccomment">//! The util exe must be executed in the root project folder where is the cargo.toml.  </span>
+<span class="doccomment">//! The util exe must be executed in the root project folder where is the Cargo.toml.  </span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! ## service_worker.js</span>
 <span class="doccomment">//! </span>
@@ -425,6 +459,13 @@
 <span class="doccomment">//! I need to store the dates somewhere.  </span>
 <span class="doccomment">//! Probably the Target folder is ok. The filename will be lmakeversionfromdate.json.</span>
 <span class="doccomment">//! Warning: I don&#39;t check if the service worker has changed because it rarely does.  </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## Install</span>
+<span class="doccomment">//! 																		  </span>
+<span class="doccomment">//! 																						   </span>
+<span class="doccomment">//! 																				   </span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! `cargo install lmake_version_from_date`  </span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! ## Makefile.toml for cargo-make  </span>
 <span class="doccomment">//! </span>
@@ -443,9 +484,17 @@
 <span class="doccomment">//! [tasks.lmake_version_from_date]</span>
 <span class="doccomment">//! clear = true</span>
 <span class="doccomment">//! private = true</span>
-<span class="doccomment">//! description = &quot;in cargo.toml change version to today date&quot;</span>
+<span class="doccomment">//! description = &quot;in Cargo.toml change version to today date&quot;</span>
 <span class="doccomment">//! script= [&quot;lmake_version_from_date&quot;]</span>
 <span class="doccomment">//! ```</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ## cargo crev reviews and advisory</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! It is recommended to always use [cargo-crev](https://github.com/crev-dev/cargo-crev)  </span>
+<span class="doccomment">//! to verify the trustworthiness of each of your dependencies.  </span>
+<span class="doccomment">//! Please, spread this info.  </span>
+<span class="doccomment">//! On the web use this url to read crate reviews. Example:  </span>
+<span class="doccomment">//! &lt;https://web.crev.dev/rust-reviews/crate/num-traits&gt;  </span>
 <span class="comment">// endregion: lmake_readme include &quot;readme.md&quot; //! A</span>
 
 <span class="comment">// region: Clippy</span>
@@ -509,11 +558,10 @@
 
 <span class="comment">//region: use statements</span>
 <span class="kw">use</span> <span class="ident">ansi_term</span>::<span class="ident">Colour</span>::{<span class="ident">Green</span>, <span class="ident">Red</span>, <span class="ident">Yellow</span>};
-<span class="kw">use</span> <span class="ident">chrono</span>::<span class="ident">offset</span>::<span class="ident">Utc</span>;
 <span class="kw">use</span> <span class="ident">chrono</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">chrono</span>::<span class="ident">DateTime</span>;
 <span class="kw">use</span> <span class="ident">chrono</span>::<span class="ident">Timelike</span>;
-<span class="kw">use</span> <span class="ident">chrono</span>::{<span class="ident">Datelike</span>, <span class="ident">Local</span>};
+<span class="kw">use</span> <span class="ident">chrono</span>::{<span class="ident">Datelike</span>, <span class="ident">Utc</span>};
 <span class="kw">use</span> <span class="ident">unwrap</span>::<span class="ident">unwrap</span>;
 <span class="comment">//use ansi_term::Style;</span>
 <span class="kw">use</span> <span class="ident">clap</span>::{<span class="ident">App</span>, <span class="ident">Arg</span>};
@@ -525,7 +573,7 @@
 <span class="doccomment">///file metadata</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
 <span class="kw">struct</span> <span class="ident">FileMetaData</span> {
-    <span class="comment">//filename with path from cargo.toml folder</span>
+    <span class="comment">//filename with path from Cargo.toml folder</span>
     <span class="ident">filename</span>: <span class="ident">String</span>,
     <span class="comment">//filedate from file</span>
     <span class="ident">filedate</span>: <span class="ident">String</span>,
@@ -578,8 +626,8 @@
     };
     <span class="comment">//make a vector of files</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec_of_metadata</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FileMetaData</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
-    <span class="comment">//the cargo.toml and in the folder rs</span>
-    <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="string">&quot;cargo.toml&quot;</span>.<span class="ident">to_string</span>();
+    <span class="comment">//the Cargo.toml and in the folder rs</span>
+    <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="string">&quot;Cargo.toml&quot;</span>.<span class="ident">to_string</span>();
     <span class="kw">let</span> <span class="ident">metadata</span> <span class="op">=</span> <span class="macro">unwrap</span><span class="macro">!</span>(<span class="ident">fs</span>::<span class="ident">metadata</span>(<span class="ident">filename</span>.<span class="ident">as_str</span>()));
     <span class="kw">let</span> <span class="ident">mtime</span> <span class="op">=</span> <span class="ident">FileTime</span>::<span class="ident">from_last_modification_time</span>(<span class="kw-2">&amp;</span><span class="ident">metadata</span>);
     <span class="kw">let</span> <span class="ident">filedate</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">mtime</span>);
@@ -626,34 +674,13 @@
     <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;is_files_equal: {}&quot;</span>, <span class="ident">is_files_equal</span>);
 
     <span class="kw">if</span> <span class="op">!</span><span class="ident">is_files_equal</span> {
-        <span class="kw">let</span> <span class="ident">date</span> <span class="op">=</span> <span class="ident">Local</span>::<span class="ident">now</span>();
-        <span class="comment">//in Rust the version must not begin with zero. There is strange situation where is</span>
-        <span class="comment">//midnight 00 and the first 9 minutes 01-09.</span>
-        <span class="kw">let</span> <span class="ident">new_version</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">date</span>.<span class="ident">hour</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="macro">format</span><span class="macro">!</span>(
-                <span class="string">&quot;{:04}.{}{:02}.{}{}&quot;</span>,
-                <span class="ident">date</span>.<span class="ident">year</span>(),
-                <span class="ident">date</span>.<span class="ident">month</span>(),
-                <span class="ident">date</span>.<span class="ident">day</span>(),
-                <span class="ident">date</span>.<span class="ident">hour</span>(),
-                <span class="ident">date</span>.<span class="ident">minute</span>()
-            )
-        } <span class="kw">else</span> {
-            <span class="macro">format</span><span class="macro">!</span>(
-                <span class="string">&quot;{:04}.{}{:02}.{}{:02}&quot;</span>,
-                <span class="ident">date</span>.<span class="ident">year</span>(),
-                <span class="ident">date</span>.<span class="ident">month</span>(),
-                <span class="ident">date</span>.<span class="ident">day</span>(),
-                <span class="ident">date</span>.<span class="ident">hour</span>(),
-                <span class="ident">date</span>.<span class="ident">minute</span>()
-            )
-        };
-
-        <span class="comment">//region: write version in cargo.toml</span>
+        <span class="kw">let</span> <span class="ident">date</span> <span class="op">=</span> <span class="ident">Utc</span>::<span class="ident">now</span>();
+        <span class="kw">let</span> <span class="ident">new_version</span> <span class="op">=</span> <span class="ident">version_from_date</span>(<span class="ident">date</span>);
+        <span class="comment">//region: write version in Cargo.toml</span>
         {
-            <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">Green</span>.<span class="ident">paint</span>(<span class="string">&quot;write version in cargo.toml&quot;</span>));
-            <span class="comment">//find version in cargo.toml</span>
-            <span class="kw">let</span> <span class="ident">cargo_filename</span> <span class="op">=</span> <span class="string">&quot;cargo.toml&quot;</span>;
+            <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">Green</span>.<span class="ident">paint</span>(<span class="string">&quot;write version in Cargo.toml&quot;</span>));
+            <span class="comment">//find version in Cargo.toml</span>
+            <span class="kw">let</span> <span class="ident">cargo_filename</span> <span class="op">=</span> <span class="string">&quot;Cargo.toml&quot;</span>;
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cargo_content</span> <span class="op">=</span> <span class="macro">unwrap</span><span class="macro">!</span>(<span class="ident">fs</span>::<span class="ident">read_to_string</span>(<span class="ident">cargo_filename</span>));
             <span class="kw">let</span> <span class="ident">delimiter</span> <span class="op">=</span> <span class="string">r#&quot;version = &quot;&quot;#</span>;
             <span class="kw">let</span> <span class="ident">delimiter_len</span> <span class="op">=</span> <span class="ident">delimiter</span>.<span class="ident">len</span>();
@@ -671,10 +698,10 @@
                         <span class="ident">cargo_content</span>.<span class="ident">insert_str</span>(<span class="ident">start_version</span>, <span class="ident">new_version</span>.<span class="ident">as_str</span>());
                         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;write file: {}&quot;</span>, <span class="ident">Yellow</span>.<span class="ident">paint</span>(<span class="ident">cargo_filename</span>));
                         <span class="kw">let</span> <span class="ident">_x</span> <span class="op">=</span> <span class="ident">fs</span>::<span class="ident">write</span>(<span class="ident">cargo_filename</span>, <span class="ident">cargo_content</span>);
-                        <span class="comment">//the cargo.toml is now different</span>
+                        <span class="comment">//the Cargo.toml is now different</span>
 
                         <span class="comment">//correct the vector</span>
-                        <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="string">&quot;cargo.toml&quot;</span>.<span class="ident">to_string</span>();
+                        <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="string">&quot;Cargo.toml&quot;</span>.<span class="ident">to_string</span>();
                         <span class="kw">let</span> <span class="ident">metadata</span> <span class="op">=</span> <span class="macro">unwrap</span><span class="macro">!</span>(<span class="ident">fs</span>::<span class="ident">metadata</span>(<span class="ident">filename</span>.<span class="ident">as_str</span>()));
                         <span class="kw">let</span> <span class="ident">mtime</span> <span class="op">=</span> <span class="ident">FileTime</span>::<span class="ident">from_last_modification_time</span>(<span class="kw-2">&amp;</span><span class="ident">metadata</span>);
                         <span class="kw">let</span> <span class="ident">filedate</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">mtime</span>);
@@ -691,7 +718,7 @@
                     <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;no end quote for version&quot;</span>);
                 }
             } <span class="kw">else</span> {
-                <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;cargo.toml has no version&quot;</span>);
+                <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Cargo.toml has no version&quot;</span>);
             }
         }
         <span class="comment">// endregion</span>
@@ -699,11 +726,11 @@
         <span class="comment">//region: write version in service_worker.js</span>
 
         <span class="comment">// search for file service_worker.js</span>
-        <span class="comment">// if the parent folder has cargo.toml, than search there</span>
+        <span class="comment">// if the parent folder has Cargo.toml, than search there</span>
         <span class="comment">// because it is a workspace with members</span>
         <span class="comment">// else search here</span>
 
-        <span class="kw">let</span> <span class="ident">cargo_filename</span> <span class="op">=</span> <span class="string">&quot;../cargo.toml&quot;</span>;
+        <span class="kw">let</span> <span class="ident">cargo_filename</span> <span class="op">=</span> <span class="string">&quot;../Cargo.toml&quot;</span>;
         <span class="kw">let</span> <span class="ident">start_dir</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">Path</span>::<span class="ident">new</span>(<span class="ident">cargo_filename</span>).<span class="ident">exists</span>() {
             <span class="ident">Path</span>::<span class="ident">new</span>(<span class="string">&quot;../&quot;</span>)
         } <span class="kw">else</span> {
@@ -750,6 +777,34 @@
         <span class="comment">//endregion</span>
     }
 }
+
+<span class="doccomment">/// converts a date to a version</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">version_from_date</span>(<span class="ident">date</span>: <span class="ident">DateTime</span><span class="op">&lt;</span><span class="ident">Utc</span><span class="op">&gt;</span>)<span class="op">-</span><span class="op">&gt;</span><span class="ident">String</span>{
+    <span class="comment">// in Rust the version must not begin with zero. </span>
+    <span class="comment">// There is an exceptional situation where is midnight 00.</span>
+    <span class="kw">let</span> <span class="ident">new_version</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">date</span>.<span class="ident">hour</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+        <span class="macro">format</span><span class="macro">!</span>(
+            <span class="string">&quot;{:04}.{}{:02}.{}&quot;</span>,
+            <span class="ident">date</span>.<span class="ident">year</span>(),
+            <span class="ident">date</span>.<span class="ident">month</span>(),
+            <span class="ident">date</span>.<span class="ident">day</span>(),
+
+            <span class="ident">date</span>.<span class="ident">minute</span>()
+        )
+    } <span class="kw">else</span> {
+        <span class="macro">format</span><span class="macro">!</span>(
+            <span class="string">&quot;{:04}.{}{:02}.{}{:02}&quot;</span>,
+            <span class="ident">date</span>.<span class="ident">year</span>(),
+            <span class="ident">date</span>.<span class="ident">month</span>(),
+            <span class="ident">date</span>.<span class="ident">day</span>(),
+            <span class="ident">date</span>.<span class="ident">hour</span>(),
+            <span class="ident">date</span>.<span class="ident">minute</span>()
+        )
+    };
+    <span class="comment">//return</span>
+    <span class="ident">new_version</span>
+}
+
 
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">integer_arithmetic</span>)]</span>
 <span class="doccomment">/// in string find from position</span>
@@ -799,5 +854,17 @@
     }
     <span class="prelude-val">Ok</span>(<span class="ident">v</span>)
 }
-</pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "lmake_version_from_date";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">test</span>{
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_date_to_version</span>(){
+        <span class="kw">let</span> <span class="ident">date_time</span> <span class="op">=</span> <span class="ident">Utc</span>.<span class="ident">ymd</span>(<span class="number">2020</span>,<span class="number">5</span>,<span class="number">22</span>).<span class="ident">and_hms</span>(<span class="number">00</span>,<span class="number">34</span>,<span class="number">0</span>);
+        
+        <span class="kw">let</span> <span class="ident">version</span> <span class="op">=</span> <span class="ident">version_from_date</span>(<span class="ident">date_time</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">version</span>,<span class="string">&quot;2020.522.34&quot;</span>);
+    }
+}</pre></div>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "lmake_version_from_date";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
